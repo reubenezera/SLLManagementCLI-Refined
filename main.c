@@ -85,8 +85,8 @@ void showList(struct linkedList *L) {
 		showNodes(L);
 	}
 	//Head & Tail Checkers for Debugging
-	printf("Head: %d\n", L->head->data);
-	printf("Tail: %d\n", L->tail->data);
+	/*printf("Head: %d\n", L->head->data);
+	printf("Tail: %d\n", L->tail->data);*/
 }
 
 //Insertion @ Head
@@ -274,7 +274,7 @@ int main() {
 		}
 
 	} while (choice != 6);
-  
+	
 	printf("\nSession Ended\n");
 	showList(L);
 	nodeCount(L);
