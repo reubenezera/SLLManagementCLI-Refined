@@ -272,7 +272,7 @@ int main() {
 			break;
 		}
 
-		if (choice >= 1 && choice <6) {
+		if (choice >= 1 && choice < 6) {
 			showList(L);
 			nodeCount(L);
 		}
