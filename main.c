@@ -66,11 +66,9 @@ void showNodes(struct linkedList *L) {
 		printf("︎︎︎↑\n");
         
 		printf(" HEAD");
-
 		for (int i = finalCharCount - 5; i > 0; i--) {
 			printf(" ");
 		}
-
 		printf(" TAIL\n\n");
 	}
 }
@@ -236,22 +234,26 @@ int main() {
 			insertAtHead(L, input);
 			nodeInserted();
 			break;
+			
 		case 2:
 			printf("\n[Tail Insertion]\nInput Value for New Node: ");
 			scanf("%d", &input);
 			insertAtTail(L, input);
 			nodeInserted();
 			break;
+			
 		case 3:
 			printf("\n[Head Deletion]\n");
 			deleteAtHead(L);
 			nodeDeleted();
 			break;
+			
 		case 4:
 			printf("\n[Tail Deletion]\n");
 			deleteAtTail(L);
 			nodeDeleted();
 			break;
+			
 		case 5:
 			printf("\n[Value-Based Deletion]\nInput Target Value: ");
 			scanf("%d", &input);
@@ -261,8 +263,10 @@ int main() {
 				nodeDeleted();
 			}
 			break;
+			
 		case 6:
 			break;
+			
 		default:
 			invalidInput();
 			break;
@@ -272,7 +276,6 @@ int main() {
 			showList(L);
 			nodeCount(L);
 		}
-
 	} while (choice != 6);
 	
 	printf("\nSession Ended\n");
