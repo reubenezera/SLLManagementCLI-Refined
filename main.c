@@ -39,37 +39,77 @@ void nodeCount(struct linkedList *L) {
 	}
 }
 
+//Measure the Tail's Position
+int measureTailPosition(struct linkedList *L, struct node *tmp, int number) {
+	int finalCharCount;
+	if (tmp == NULL) {
+		return 0;
+	} else if (tmp->next == L->tail) {
+		finalCharCount = number;
+		return finalCharCount;
+	} else {
+		return 0;
+	}
+}
+
+//Draws an Individual Node
+int drawNode(struct linkedList *L, int data) {
+	return printf("[%d] -> ", data);
+}
+
+//Deletes an Individual Node
+void destroyNode(struct linkedList *L, struct node *tmp) {
+	free(tmp);
+	L->size--;
+}
+
+//Prints Spaces Between Pointer Labels
+void printSpaces(int data1, int data2) {
+	for (int i = data1 - data2; i > 0; i--) {
+		printf(" ");
+	}
+}
+
+//Prints the Pointers' Arrows
+void printArrowLine(int input) {
+	int pointerArrow1 = printf(" ^") - 1;
+	printSpaces(input, pointerArrow1);
+	printf("^\n");
+}
+
+//Prints the Pointers' Labels
+void printLabelLine(int input) {
+	int headLabel = printf(" HEAD");
+	printSpaces(input, headLabel);
+	printf(" TAIL\n\n");
+}
+
 //Shows the Nodes in the List
 void showNodes(struct linkedList *L) {
+	int headLabel;
+
 	printf("Your List:\n\n");
 	if (L->size == 1) {
-		printf("[%d] -> NULL", L->head->data);
-		printf("\n\n ^HEAD\n ^TAIL\n\n");
+		drawNode(L, L->head->data);
+		printf("NULL\n\n ^HEAD\n ^TAIL\n\n");
 	} else if (L->size > 1) {
 		struct node *temp = L->head;
 		int charCount = 0;
-		int finalCharCount;
+		int tailPosition;
 
 		while (temp != NULL) {
-			charCount += printf("[%d] -> ", temp->data);
+			charCount += drawNode(L, temp->data);
+
 			if (temp->next == L->tail) {
-				finalCharCount = charCount;
+				tailPosition = charCount;
 			}
+
 			temp = temp->next;
 		}
 		printf("NULL\n");
-        
-        printf(" ︎↑");
-        for (int i = finalCharCount - 1; i > 0; i--) {
-			printf(" ");
-		}
-		printf("︎︎︎↑\n");
-        
-		printf(" HEAD");
-		for (int i = finalCharCount - 5; i > 0; i--) {
-			printf(" ");
-		}
-		printf(" TAIL\n\n");
+
+		printArrowLine(tailPosition);
+		printLabelLine(tailPosition);
 	}
 }
 
@@ -83,13 +123,17 @@ void showList(struct linkedList *L) {
 		showNodes(L);
 	}
 	//Head & Tail Checkers for Debugging
-	/*printf("Head: %d\n", L->head->data);
-	printf("Tail: %d\n", L->tail->data);*/
+	printf("Head: %d\n", L->head->data);
+	printf("Tail: %d\n", L->tail->data);
 }
 
 //Insertion @ Head
 void insertAtHead (struct linkedList *L, int data) {
 	struct node *newNode = malloc(sizeof(*newNode));
+	if (newNode == NULL) {
+		perror("malloc");
+		exit(0);
+	}
 
 	if (L->head == NULL && L->tail == NULL) { //Empty List
 		L->tail = newNode;
@@ -107,6 +151,11 @@ void insertAtTail (struct linkedList *L, int data) {
 		insertAtHead(L, data);
 	} else {
 		struct node *newNode = malloc(sizeof(*newNode));
+		if (newNode == NULL) {
+			perror("malloc");
+			exit(0);
+		}
+
 		newNode->data = data;
 		newNode->next = NULL;
 
@@ -117,29 +166,30 @@ void insertAtTail (struct linkedList *L, int data) {
 }
 
 //Deletion @ Head
-void deleteAtHead(struct linkedList *L) {
+bool deleteAtHead(struct linkedList *L) {
 	if (L->head == NULL && L->tail == NULL) { //Empty List
-		return;
+		return false;
 	} else if (L->head == L->tail) { //Only 1 Node
 		struct node *temp = L->head;
 		L->head = NULL;
 		L->tail = NULL;
-		free(temp);
+		destroyNode(L, temp);
+		return true;
 	} else {//More than 1 node present
 		struct node *temp = L->head;
 		L->head = temp->next;
-		free(temp);
+		destroyNode(L, temp);
+		return true;
 	}
-	L->size--;
 }
 
 //Deletion @ Tail
-void deleteAtTail(struct linkedList *L) {
+bool deleteAtTail(struct linkedList *L) {
 	if (L->head == NULL && L->tail == NULL) { //Empty list
-		return;
+		return false;
 	} else if (L->head->next == NULL && L->tail->next == NULL) { //Only 1 node
 		deleteAtHead(L);
-		return;
+		return true;
 	} else { //More than 1 node present
 		struct node *appoint = L->head;
 		struct node *delete = L->tail;
@@ -150,9 +200,9 @@ void deleteAtTail(struct linkedList *L) {
 
 		L->tail = appoint;
 		appoint->next = NULL;
-		free(delete);
+		destroyNode(L, delete);
+		return true;
 	}
-	L->size--;
 }
 
 //Deletion by Value
@@ -175,8 +225,7 @@ bool deleteByValue(struct linkedList *L, int key) {
 		return true;
 	} else { //Deleting middle
 		prev->next = temp->next;
-		free(temp);
-		L->size--;
+		destroyNode(L, temp);
 		return true;
 	}
 }
@@ -212,6 +261,11 @@ void nodeDeleted() {
 
 int main() {
 	struct linkedList *L = malloc(sizeof(*L));
+	if (L == NULL) {
+		perror("malloc");
+		exit(0);
+	}
+
 	initList(L);
 	int choice;
 
@@ -234,26 +288,32 @@ int main() {
 			insertAtHead(L, input);
 			nodeInserted();
 			break;
-			
+
 		case 2:
 			printf("\n[Tail Insertion]\nInput Value for New Node: ");
 			scanf("%d", &input);
 			insertAtTail(L, input);
 			nodeInserted();
 			break;
-			
+
 		case 3:
 			printf("\n[Head Deletion]\n");
-			deleteAtHead(L);
-			nodeDeleted();
+			if (deleteAtHead(L) == false) {
+				printf("\nNothing to delete.\n");
+			} else {
+				nodeDeleted();
+			}
 			break;
-			
+
 		case 4:
 			printf("\n[Tail Deletion]\n");
-			deleteAtTail(L);
-			nodeDeleted();
+			if (deleteAtTail(L) == false) {
+				printf("\nNothing to delete.\n");
+			} else {
+				nodeDeleted();
+			}
 			break;
-			
+
 		case 5:
 			printf("\n[Value-Based Deletion]\nInput Target Value: ");
 			scanf("%d", &input);
@@ -263,10 +323,10 @@ int main() {
 				nodeDeleted();
 			}
 			break;
-			
+
 		case 6:
 			break;
-			
+
 		default:
 			invalidInput();
 			break;
@@ -277,7 +337,7 @@ int main() {
 			nodeCount(L);
 		}
 	} while (choice != 6);
-	
+
 	printf("\nSession Ended\n");
 	showList(L);
 	nodeCount(L);
