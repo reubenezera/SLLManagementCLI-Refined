@@ -39,7 +39,7 @@ void nodeCount(struct linkedList *L) {
 	}
 }
 
-//Measure the Tail's Position
+//Saves the Measurement of the Tail's Position
 int measureTailPosition(struct linkedList *L, struct node *tmp, int number) {
 	int finalCharCount;
 	if (tmp == NULL) {
