@@ -230,6 +230,13 @@ bool deleteByValue(struct linkedList *L, int key) {
 	}
 }
 
+//Prints the Header
+void printHeader() {
+	printf("============================\n");
+	printf(" Singly Linked List Manager\n");
+	printf("============================\n");
+}
+
 //Prints the menu
 void printMenu() {
 	printf("\n");
@@ -269,10 +276,7 @@ int main() {
 	initList(L);
 	int choice;
 
-	printf("============================\n");
-	printf(" Singly Linked List Manager\n");
-	printf("============================\n");
-
+	printHeader();
 	showList(L);
 	nodeCount(L);
 
